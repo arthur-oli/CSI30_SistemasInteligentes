@@ -93,7 +93,7 @@ def main():
     startingTotalDistance = calculateTspDistance(startingState)
     
     # Run the main algorithm and save the best state found
-    bestStateSimulatedAnnealing = simulatedAnnealing(startingState, maxTemperature, minTemperature, startingTotalDistance, maxSteps)
+    bestState = simulatedAnnealing(startingState, maxTemperature, minTemperature, startingTotalDistance, maxSteps)
     
     # Plot the starting points (random points)
     startingState.append(startingState[0])
@@ -113,8 +113,8 @@ def main():
     plt.title("Random Starting State")
     
     # Plot the best state found by the algorithm
-    bestStateSimulatedAnnealing.append(bestStateSimulatedAnnealing[0])
-    xb, yb = zip(*bestStateSimulatedAnnealing)
+    bestState.append(bestState[0])
+    xb, yb = zip(*bestState)
     plt.subplot(1, 3, 3)
     plt.plot(xb, yb)
     plt.scatter(xb, yb, color = 'black')
