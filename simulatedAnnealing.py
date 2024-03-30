@@ -8,12 +8,12 @@ def calculateEuclidianDistance (p1, p2):
 
 # Generates "numberOfPoints" random points in a maxCoordinate X maxCoordinate grid
 def generateStartingPoints (numberOfPoints, maxCoordinate):
-    pontos = []
+    points = []
 
     for i in range (numberOfPoints):
-        pontos.append((randint(0, maxCoordinate), randint(0, maxCoordinate)))
+        points.append((randint(0, maxCoordinate), randint(0, maxCoordinate)))
 
-    return pontos
+    return points
 
 # Generates a matrix of distances between every point of a grid, given the array of points
 def generateDistanceMatrix (state):
