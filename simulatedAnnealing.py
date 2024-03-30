@@ -2,11 +2,11 @@ from random import randint, random, shuffle
 from math import cos, sin, pi, exp
 import matplotlib.pyplot as plt
 
-# Calcula distância euclidiana entre dois pontos
+# Calculates euclidian distance between two points
 def euclidDistance (p1, p2):
     return ((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)**0.5
 
-# Gera o início
+# Generates "numberOfPoints" random points in a maxCoordinate X maxCoordinate grid
 def generateStartingPoints (numberOfPoints, maxCoordinate):
     pontos = []
 
@@ -15,6 +15,7 @@ def generateStartingPoints (numberOfPoints, maxCoordinate):
 
     return pontos
 
+# Generates a matrix of distances between every point of a grid, given the array of points
 def generateDistanceMatrix (state):
     stateLength = len(state)
     distanceMatrix = [[0 for x in range(stateLength)] for y in range(stateLength)]
@@ -25,6 +26,7 @@ def generateDistanceMatrix (state):
     
     return distanceMatrix
 
+# Generates a random possible neighbor state by randomly swapping two points in the current state
 def generatePossibleState(currentState):
     randomPoint1 = randint(0, len(currentState) - 1)
     randomPoint2 = randint(0, len(currentState) - 1)
@@ -36,72 +38,63 @@ def generatePossibleState(currentState):
     #possibleState.append(possibleState[0])
     return possibleState
 
+# Calculates the total distance of a state, adding the distance between each point
 def calculateTspDistance(state):
     totalDistance = 0
     distanceMatrix = generateDistanceMatrix(state)
     for i in range (len(state) - 1):
         totalDistance += distanceMatrix[i+1][i]
     
-    # Closed loop, add closing distance
+    # Closed loop, add closing distance (distance between last and first point)
     totalDistance += distanceMatrix[0][-1]
     return totalDistance
 
+# The algorithm itself. Given a starting state, runs until conditions are met and returns the best state found based on minimal total distance
 def simulatedAnnealing(startingState, maxTemperature, minTemperature, startingTotalDistance, maxSteps):
-    currentTemperature = 0
     currentStep = 1
     currentState = startingState
     currentTotalDistance = startingTotalDistance
-    temperatureSchedule = maxTemperature
+    currentTemperature = maxTemperature
     bestTotalDistance = startingTotalDistance
     bestState = startingState
-    while(temperatureSchedule >= minTemperature and temperatureSchedule > 0 and currentStep <= maxSteps):
-        print(temperatureSchedule, minTemperature)
-        currentTemperature += 1
+    # While the "temperature" (currentTemperature) is not low enough and the algorithm didn't reach maximum "time" (maxSteps)
+    while(currentTemperature >= minTemperature and currentTemperature > 0 and currentStep <= maxSteps):
         possibleState = generatePossibleState(currentState)
         possibleStateTotalDistance = calculateTspDistance(possibleState)
         deltaDistance = possibleStateTotalDistance - currentTotalDistance
 
+        # Check if the neighbor state is better
         if possibleStateTotalDistance < bestTotalDistance:
             bestTotalDistance = possibleStateTotalDistance
             bestState = possibleState.copy()
 
-        elif random() < safe_exp(-deltaDistance / temperatureSchedule):
+        # If it isn't, check for random probability of making a locally bad choice
+        elif random() < exp(-deltaDistance / currentTemperature):
             currentTotalDistance = possibleStateTotalDistance
             currentState = possibleState.copy()
 
-        temperatureSchedule = minTemperature + (maxTemperature - minTemperature) * ((maxSteps - currentStep)/maxSteps)
+        # Update the currentTemperature linearly (can be changed to exponential, logarithmic, etc)
+        currentTemperature = minTemperature + (maxTemperature - minTemperature) * ((maxSteps - currentStep)/maxSteps)
         currentStep += 1
     
     return bestState
 
-def safe_exp(x):
-    try: return exp(x)
-    except: return 0
-
-def generateCircle():
-    n_pts = 10
-    dr = (2 * pi) / n_pts
-
-    x0 = []
-    for i in range(0,n_pts):
-        radians = dr * i  
-        x0.append([cos(radians), sin(radians)])
-    
-    shuffle(x0)
-    return x0
-
 def main(): 
-    numberOfPoints = 25
+    # Simulated annealing parameters. Changing the numberOfPoints, temperature and number of steps (maxSteps) changes the outcome
+    numberOfPoints = 15
     pointMaxCoordinate = 100
     maxTemperature = 10.0
     minTemperature = 0.001
     maxSteps = 10000
 
-    #startingState = generateCircle()
+    # Generate a starting state with random points
     startingState = generateStartingPoints(numberOfPoints, pointMaxCoordinate)
     startingTotalDistance = calculateTspDistance(startingState)
+    
+    # Run the main algorithm and save the best state found
     bestStateSimulatedAnnealing = simulatedAnnealing(startingState, maxTemperature, minTemperature, startingTotalDistance, maxSteps)
     
+    # Plot the starting points (random points)
     startingState.append(startingState[0])
     xs, ys = zip(*startingState)
     plt.subplot(1, 3, 1)
@@ -110,6 +103,7 @@ def main():
     plt.ylabel('Y Coordinates')
     plt.title("Generated Points")
 
+    # Plot the starting state (random path)
     plt.subplot(1, 3, 2)
     plt.plot(xs, ys)
     plt.scatter(xs, ys, color = 'black')
@@ -117,6 +111,7 @@ def main():
     plt.ylabel('Y Coordinates')
     plt.title("Random Starting State")
     
+    # Plot the best state found by the algorithm
     bestStateSimulatedAnnealing.append(bestStateSimulatedAnnealing[0])
     xb, yb = zip(*bestStateSimulatedAnnealing)
     plt.subplot(1, 3, 3)
