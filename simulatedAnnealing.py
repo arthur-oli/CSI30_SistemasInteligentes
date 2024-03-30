@@ -73,7 +73,7 @@ def simulatedAnnealing(startingState, maxTemperature, minTemperature, startingTo
             currentTotalDistance = possibleStateTotalDistance
             currentState = possibleState.copy()
 
-        # Update the currentTemperature linearly (can be changed to exponential, logarithmic, etc)
+        # Update the currentTemperature with a additive linear function (can be changed to exponential, logarithmic, etc)
         currentTemperature = minTemperature + (maxTemperature - minTemperature) * ((maxSteps - currentStep)/maxSteps)
         currentStep += 1
     
@@ -81,11 +81,12 @@ def simulatedAnnealing(startingState, maxTemperature, minTemperature, startingTo
 
 def main(): 
     # Simulated annealing parameters. Changing the numberOfPoints, temperature and number of steps (maxSteps) changes the outcome
-    numberOfPoints = 15
+    numberOfPoints = 10
     pointMaxCoordinate = 100
     maxTemperature = 10.0
     minTemperature = 0.001
-    maxSteps = 10000
+    # Maximum steps depends on number of points. Exponential function picked based on testing.
+    maxSteps = 100 * (10 ** int(numberOfPoints/10))
 
     # Generate a starting state with random points
     startingState = generateStartingPoints(numberOfPoints, pointMaxCoordinate)
