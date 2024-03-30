@@ -3,7 +3,7 @@ from math import cos, sin, pi, exp
 import matplotlib.pyplot as plt
 
 # Calculates euclidian distance between two points
-def calculateEuclidDistance (p1, p2):
+def calculateEuclidianDistance (p1, p2):
     return ((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)**0.5
 
 # Generates "numberOfPoints" random points in a maxCoordinate X maxCoordinate grid
@@ -22,7 +22,7 @@ def generateDistanceMatrix (state):
 
     for i in range(stateLength):
         for j in range(stateLength):
-            distanceMatrix[j][i] = distanceMatrix[i][j] = calculateEuclidDistance(state[j], state[i])    
+            distanceMatrix[j][i] = distanceMatrix[i][j] = calculateEuclidianDistance(state[j], state[i])    
     
     return distanceMatrix
 
