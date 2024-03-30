@@ -1,5 +1,5 @@
 from random import randint, random, shuffle
-from math import cos, sin, pi, exp
+from math import exp
 import matplotlib.pyplot as plt
 
 # Calculates euclidian distance between two points
