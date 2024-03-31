@@ -1,5 +1,5 @@
-from random import randint, random, shuffle
-from math import exp, log
+from random import randint, random
+from math import exp
 import matplotlib.pyplot as plt
 
 # Calculates euclidian distance between two points
@@ -50,7 +50,7 @@ def calculateTspDistance(state):
     return totalDistance
 
 # The algorithm itself. Given a starting state, runs until conditions are met and returns the best state found based on minimal total distance
-def simulatedAnnealing(startingState, maxTemperature, minTemperature, startingTotalDistance, maxSteps):
+def simulatedAnnealing(startingState, maxTemperature, minTemperature, startingTotalDistance, numberOfPoints):
     currentStep = 1
     currentState = startingState
     currentTotalDistance = startingTotalDistance
@@ -59,8 +59,9 @@ def simulatedAnnealing(startingState, maxTemperature, minTemperature, startingTo
     bestState = startingState
     bestArray = []
     distanceArray = []
+    maxSteps = 10 ** ((numberOfPoints / 15) + 2)
     # While the "temperature" (currentTemperature) is not low enough and the algorithm didn't reach maximum "time" (maxSteps)
-    while(currentTemperature >= minTemperature and currentStep <= maxSteps):
+    while(currentTemperature >= minTemperature):
         possibleState = generatePossibleState(currentState)
         possibleStateTotalDistance = calculateTspDistance(possibleState)
         deltaDistance = possibleStateTotalDistance - currentTotalDistance
@@ -79,7 +80,7 @@ def simulatedAnnealing(startingState, maxTemperature, minTemperature, startingTo
             currentState = possibleState.copy()
 
         # Update the currentTemperature with a additive linear function (can be changed to exponential, logarithmic, etc)
-        currentTemperature = minTemperature + (maxTemperature - minTemperature) * ((maxSteps - currentStep)/maxSteps)
+        currentTemperature = minTemperature + (maxTemperature - minTemperature) * ((maxSteps - currentStep) / maxSteps)
 
         distanceArray.append(currentTotalDistance)
         currentStep += 1
@@ -88,18 +89,17 @@ def simulatedAnnealing(startingState, maxTemperature, minTemperature, startingTo
 
 def main(): 
     # Simulated annealing parameters. Changing the numberOfPoints, temperature and number of steps (maxSteps) changes the outcome
-    numberOfPoints = 20
+    numberOfPoints = 25
     pointMaxCoordinate = 100
     maxTemperature = 10.0
     minTemperature = 0.001
     # Maximum steps depends on number of points. Exponential function picked based on testing.
-    maxSteps = 10 ** ((numberOfPoints /10) + 2)
     # Generate a starting state with random points
     startingState = generateStartingPoints(numberOfPoints, pointMaxCoordinate)
     startingTotalDistance = calculateTspDistance(startingState)
     
     # Run the main algorithm and save the best state found
-    bestState, bestArray, distanceArray = simulatedAnnealing(startingState, maxTemperature, minTemperature, startingTotalDistance, maxSteps)
+    bestState, bestArray, distanceArray = simulatedAnnealing(startingState, maxTemperature, minTemperature, startingTotalDistance, numberOfPoints)
 
     # Plot the starting points (random points)
     startingState.append(startingState[0])
