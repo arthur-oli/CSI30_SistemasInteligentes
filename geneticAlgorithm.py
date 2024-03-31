@@ -70,11 +70,15 @@ def geneticAlgorithm(startingPopulation, numberOfPoints, numberOfStatesPicked, m
                 choice2 = sorted(choice2)
                 choice1 = choice1[0]
                 choice2 = choice2[0]
-                #parent1 = sorted(choices(possiblePopulation, k = numberOfStatesPicked))[0]
-                #parent2 = sorted(choices(possiblePopulation, k = numberOfStatesPicked))[0]
+                parent1 = True
+                parent2 = True
+                while (parent1 == parent2):
+                    parent1 = sorted(choices(possiblePopulation, k = numberOfStatesPicked))[0]
+                    parent2 = sorted(choices(possiblePopulation, k = numberOfStatesPicked))[0]
                 parent1 = choice1
                 parent2 = choice2
 
+                # testar ponto fixo de crossover
                 crossoverPoint = randint(0, numberOfPoints - 1)
                 child1 = parent1[1][0:crossoverPoint]
                 for j in parent2[1]:
@@ -87,6 +91,7 @@ def geneticAlgorithm(startingPopulation, numberOfPoints, numberOfStatesPicked, m
                         child2.append(j)
             else:
                 # Crossover didn't happen
+                # Remover 0, testar
                 child1 = choices(possiblePopulation)[0][1]
                 child2 = choices(possiblePopulation)[0][1]
                 if (random() < mutationRate):
