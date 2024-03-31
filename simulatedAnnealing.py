@@ -1,5 +1,5 @@
 from random import randint, random, shuffle
-from math import exp
+from math import exp, log
 import matplotlib.pyplot as plt
 
 # Calculates euclidian distance between two points
@@ -35,7 +35,7 @@ def generatePossibleState(currentState):
         randomPoint2 = randint(0, len(currentState) - 1)
     possibleState = currentState.copy()
     possibleState[randomPoint1], possibleState[randomPoint2] = possibleState[randomPoint2], possibleState[randomPoint1]
-    #possibleState.append(possibleState[0])
+    possibleState.append(possibleState[0])
     return possibleState
 
 # Calculates the total distance of a state, adding the distance between each point
@@ -57,8 +57,10 @@ def simulatedAnnealing(startingState, maxTemperature, minTemperature, startingTo
     currentTemperature = maxTemperature
     bestTotalDistance = startingTotalDistance
     bestState = startingState
+    bestArray = []
+    distanceArray = []
     # While the "temperature" (currentTemperature) is not low enough and the algorithm didn't reach maximum "time" (maxSteps)
-    while(currentTemperature >= minTemperature and currentTemperature > 0 and currentStep <= maxSteps):
+    while(currentTemperature >= minTemperature and currentStep <= maxSteps):
         possibleState = generatePossibleState(currentState)
         possibleStateTotalDistance = calculateTspDistance(possibleState)
         deltaDistance = possibleStateTotalDistance - currentTotalDistance
@@ -66,7 +68,10 @@ def simulatedAnnealing(startingState, maxTemperature, minTemperature, startingTo
         # Check if the neighbor state is better
         if possibleStateTotalDistance < bestTotalDistance:
             bestTotalDistance = possibleStateTotalDistance
+            currentTotalDistance = bestTotalDistance
+            bestArray.append(bestTotalDistance)
             bestState = possibleState.copy()
+            currentState = bestState.copy()
 
         # If it isn't, check for random probability of making a locally bad choice
         elif random() < exp(-deltaDistance / currentTemperature):
@@ -75,37 +80,39 @@ def simulatedAnnealing(startingState, maxTemperature, minTemperature, startingTo
 
         # Update the currentTemperature with a additive linear function (can be changed to exponential, logarithmic, etc)
         currentTemperature = minTemperature + (maxTemperature - minTemperature) * ((maxSteps - currentStep)/maxSteps)
+
+        distanceArray.append(currentTotalDistance)
         currentStep += 1
     
-    return bestState
+    return bestState, bestArray, distanceArray
 
 def main(): 
     # Simulated annealing parameters. Changing the numberOfPoints, temperature and number of steps (maxSteps) changes the outcome
-    numberOfPoints = 10
+    numberOfPoints = 25
     pointMaxCoordinate = 100
     maxTemperature = 10.0
     minTemperature = 0.001
     # Maximum steps depends on number of points. Exponential function picked based on testing.
-    maxSteps = 100 * (10 ** int(numberOfPoints/10))
-
+    maxSteps = 10 ** (log(numberOfPoints) + 1)
     # Generate a starting state with random points
     startingState = generateStartingPoints(numberOfPoints, pointMaxCoordinate)
     startingTotalDistance = calculateTspDistance(startingState)
     
     # Run the main algorithm and save the best state found
-    bestState = simulatedAnnealing(startingState, maxTemperature, minTemperature, startingTotalDistance, maxSteps)
+    bestState, bestArray, distanceArray = simulatedAnnealing(startingState, maxTemperature, minTemperature, startingTotalDistance, maxSteps)
     
+
     # Plot the starting points (random points)
     startingState.append(startingState[0])
     xs, ys = zip(*startingState)
-    plt.subplot(1, 3, 1)
+    plt.subplot(1, 5, 1)
     plt.scatter(xs, ys, color = 'black')
     plt.xlabel('X Coordinates')
     plt.ylabel('Y Coordinates')
     plt.title("Generated Points")
 
     # Plot the starting state (random path)
-    plt.subplot(1, 3, 2)
+    plt.subplot(1, 5, 2)
     plt.plot(xs, ys)
     plt.scatter(xs, ys, color = 'black')
     plt.xlabel('X Coordinates')
@@ -115,12 +122,24 @@ def main():
     # Plot the best state found by the algorithm
     bestState.append(bestState[0])
     xb, yb = zip(*bestState)
-    plt.subplot(1, 3, 3)
+    plt.subplot(1, 5, 3)
     plt.plot(xb, yb)
     plt.scatter(xb, yb, color = 'black')
     plt.xlabel('X Coordinates')
     plt.ylabel('Y Coordinates')
     plt.title("Best State")
+
+    plt.subplot(1, 5, 4)
+    plt.plot(bestArray)
+    plt.xlabel('Number of better states found')
+    plt.ylabel('Total distance')
+    plt.title("Total distance by findings of better states")
+
+    plt.subplot(1, 5, 5)
+    plt.plot(distanceArray)
+    plt.xlabel('Total steps')
+    plt.ylabel('Total distance')
+    plt.title("Distance by steps")
 
     plt.show()
 
