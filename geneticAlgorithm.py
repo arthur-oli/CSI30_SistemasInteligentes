@@ -1,21 +1,33 @@
 from random import randint, random, choices
-from math import exp, log
 import matplotlib.pyplot as plt
 
 # Calculates euclidian distance between two points
 def calculateEuclidianDistance (p1, p2):
     return ((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)**0.5
 
+def generatePossibleState(currentState):
+    randomPoint1 = randint(0, len(currentState) - 1)
+    randomPoint2 = randint(0, len(currentState) - 1)
+    while (randomPoint1 == randomPoint2):
+        randomPoint1 = randint(0, len(currentState) - 1)
+        randomPoint2 = randint(0, len(currentState) - 1)
+    possibleState = currentState.copy()
+    possibleState[randomPoint1], possibleState[randomPoint2] = possibleState[randomPoint2], possibleState[randomPoint1]
+    #possibleState.append(possibleState[0])
+    return possibleState
+
 # Generates "numberOfPoints" random points in a maxCoordinate X maxCoordinate grid
 def generateStartingPopulation (numberOfStates, numberOfPoints, maxCoordinate):
     population = []
+    points = []
+    for j in range (numberOfPoints):
+        points.append((randint(0, maxCoordinate), randint(0, maxCoordinate)))
+
     for i in range (numberOfStates):
-        points = []
-        for j in range (numberOfPoints):
-            points.append((randint(0, maxCoordinate), randint(0, maxCoordinate)))
-        
         distance = calculateTspDistance(points)
         population.append([distance, points])
+        points = generatePossibleState(points)
+        
     bestState = sorted(population)[0]
     return population, bestState
 
