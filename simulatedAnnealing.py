@@ -35,7 +35,7 @@ def generatePossibleState(currentState):
         randomPoint2 = randint(0, len(currentState) - 1)
     possibleState = currentState.copy()
     possibleState[randomPoint1], possibleState[randomPoint2] = possibleState[randomPoint2], possibleState[randomPoint1]
-    possibleState.append(possibleState[0])
+    #possibleState.append(possibleState[0])
     return possibleState
 
 # Calculates the total distance of a state, adding the distance between each point
