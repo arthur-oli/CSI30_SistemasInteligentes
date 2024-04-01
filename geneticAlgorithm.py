@@ -1,4 +1,4 @@
-from random import randint, random, choices
+from random import randint, random, choices, shuffle
 import matplotlib.pyplot as plt
 
 point = tuple[float, float]
@@ -19,6 +19,7 @@ def generatePossibleState(currentState):
         possibleState[randomPoint2],
         possibleState[randomPoint1],
     )
+    shuffle(possibleState)
     # possibleState.append(possibleState[0])
     return possibleState
 
