@@ -15,17 +15,6 @@ def generateStartingPoints (numberOfPoints, maxCoordinate):
 
     return points
 
-# Generates a matrix of distances between every point of a grid, given the array of points
-def generateDistanceMatrix (state):
-    stateLength = len(state)
-    distanceMatrix = [[0 for x in range(stateLength)] for y in range(stateLength)]
-
-    for i in range(stateLength):
-        for j in range(stateLength):
-            distanceMatrix[j][i] = distanceMatrix[i][j] = calculateEuclidianDistance(state[j], state[i])    
-    
-    return distanceMatrix
-
 # Generates a random possible neighbor state by randomly swapping two points in the current state
 def generatePossibleState(currentState):
     randomPoint1 = randint(0, len(currentState) - 1)
@@ -41,12 +30,11 @@ def generatePossibleState(currentState):
 # Calculates the total distance of a state, adding the distance between each point
 def calculateTspDistance(state):
     totalDistance = 0
-    distanceMatrix = generateDistanceMatrix(state)
     for i in range (len(state) - 1):
-        totalDistance += distanceMatrix[i+1][i]
+        totalDistance += calculateEuclidianDistance(state[i], state[i + 1])
     
     # Closed loop, add closing distance (distance between last and first point)
-    totalDistance += distanceMatrix[0][-1]
+    totalDistance += calculateEuclidianDistance(state[0], state[-1])
     return totalDistance
 
 # The algorithm itself. Given a starting state, runs until conditions are met and returns the best state found based on minimal total distance

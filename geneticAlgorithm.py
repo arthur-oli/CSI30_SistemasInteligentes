@@ -5,22 +5,9 @@ import matplotlib.pyplot as plt
 def calculateEuclidianDistance(p1, p2):
     return ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2) ** 0.5
 
-# Generates a matrix of distances between every point of a grid, given the array of points
-def generateDistanceMatrix(state):
-    stateLength = len(state)
-    distanceMatrix = [[0 for x in range(stateLength)] for y in range(stateLength)]
-
-    for i in range(stateLength):
-        for j in range(stateLength):
-            distanceMatrix[j][i] = distanceMatrix[i][j] = calculateEuclidianDistance(
-                state[j], state[i]
-            )
-    return distanceMatrix
-
 # Calculates the total distance of a state, adding the distance between each point
 def calculateTspDistance(state):
     totalDistance = 0
-    # distanceMatrix = generateDistanceMatrix(state)
     for i in range(len(state) - 1):
         totalDistance += calculateEuclidianDistance(state[i], state[i + 1])
 
