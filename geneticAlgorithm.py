@@ -118,7 +118,7 @@ def main():
     numberOfPoints = 20
     maxCoordinate = 100
     mutationRate = 0.1
-    maxSteps = 5000
+    maxSteps = 1000
     adaptationThreshold = 400
     print(f"Starting simulation. Generated {numberOfPoints} points, will run {maxSteps} steps or until it reaches {adaptationThreshold} distance or lower.")
 
