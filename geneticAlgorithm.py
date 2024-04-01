@@ -20,12 +20,12 @@ def generateDistanceMatrix(state):
 # Calculates the total distance of a state, adding the distance between each point
 def calculateTspDistance(state):
     totalDistance = 0
-    distanceMatrix = generateDistanceMatrix(state)
+    # distanceMatrix = generateDistanceMatrix(state)
     for i in range(len(state) - 1):
-        totalDistance += distanceMatrix[i + 1][i]
+        totalDistance += calculateEuclidianDistance(state[i], state[i + 1])
 
     # Closed loop, add closing distance (distance between last and first point)
-    totalDistance += distanceMatrix[0][-1]
+    totalDistance += calculateEuclidianDistance(state[0], state[-1])
     return totalDistance
 
 # Generates a possible state by swapping two random points on the current state
