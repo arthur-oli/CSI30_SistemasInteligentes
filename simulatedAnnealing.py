@@ -90,7 +90,7 @@ def simulatedAnnealing(startingState, maxTemperature, minTemperature, startingTo
 
 def main(): 
     # Simulated annealing parameters. Changing the numberOfPoints, temperature and number of steps (maxSteps) changes the outcome
-    numberOfPoints = 10
+    numberOfPoints = 35
     pointMaxCoordinate = 100
     maxTemperature = 10.0
     minTemperature = 0.001
