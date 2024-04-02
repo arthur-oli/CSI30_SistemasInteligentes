@@ -1,18 +1,15 @@
 from random import random, randint, choices, shuffle
+from math import dist
 import matplotlib.pyplot as plt
-
-# Calculates euclidian distance between two points
-def calculateEuclidianDistance(p1, p2):
-    return ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2) ** 0.5
 
 # Calculates the total distance of a state, adding the distance between each point
 def calculateTspDistance(state):
     totalDistance = 0
     for i in range(len(state) - 1):
-        totalDistance += calculateEuclidianDistance(state[i], state[i + 1])
+        totalDistance += dist(state[i], state[i + 1])
 
     # Closed loop, add closing distance (distance between last and first point)
-    totalDistance += calculateEuclidianDistance(state[0], state[-1])
+    totalDistance += dist(state[0], state[-1])
     return totalDistance
 
 # Generates a possible state by swapping two random points on the current state
@@ -66,11 +63,11 @@ def geneticAlgorithm(startingPopulation, maxSteps, mutationRate, adaptationThres
     distanceArray = []
     while(currentStep <= maxSteps):
         newPopulation = []
-        # Possible roulette implementation
+        # Possible roulette choice implementation
         # totalFitness = sum(state[0] for state in population)
         # selectionProbabilities = [(state[0] / totalFitness) for state in population]
         for _ in range (len(population)):
-            # Possible roulette implementation
+            # Possible roulette choice implementation
             # parent1 = sorted(choices(population, weights=selectionProbabilities))[0]
             # parent2 = sorted(choices(population, weights=selectionProbabilities))[0]
             parent1 = sorted(choices(population, k = 4))[0]
@@ -105,11 +102,11 @@ def geneticAlgorithm(startingPopulation, maxSteps, mutationRate, adaptationThres
 
 def main():
     populationSize = 50
-    numberOfPoints = 20
+    numberOfPoints = 15
     maxCoordinate = 100
     mutationRate = 0.1
     maxSteps = 5000
-    adaptationThreshold = 400
+    adaptationThreshold = 325
     print(f"Starting simulation. Generated {numberOfPoints} points, will run {maxSteps} steps or until it reaches {adaptationThreshold} distance or lower.")
 
     startingPopulation = generateStartingPopulation(populationSize, numberOfPoints, maxCoordinate)

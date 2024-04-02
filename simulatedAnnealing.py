@@ -1,16 +1,12 @@
 from random import randint, random
-from math import exp, log
+from math import exp, dist
 import matplotlib.pyplot as plt
-
-# Calculates euclidian distance between two points
-def calculateEuclidianDistance (p1, p2):
-    return ((p1[0] - p2[0])**2 + (p1[1] - p2[1])**2)**0.5
 
 # Generates "numberOfPoints" random points in a maxCoordinate X maxCoordinate grid
 def generateStartingPoints (numberOfPoints, maxCoordinate):
     points = []
 
-    for i in range (numberOfPoints):
+    for _ in range (numberOfPoints):
         points.append((randint(0, maxCoordinate), randint(0, maxCoordinate)))
 
     return points
@@ -24,17 +20,16 @@ def generatePossibleState(currentState):
         randomPoint2 = randint(0, len(currentState) - 1)
     possibleState = currentState.copy()
     possibleState[randomPoint1], possibleState[randomPoint2] = possibleState[randomPoint2], possibleState[randomPoint1]
-    #possibleState.append(possibleState[0])
     return possibleState
 
 # Calculates the total distance of a state, adding the distance between each point
 def calculateTspDistance(state):
     totalDistance = 0
     for i in range (len(state) - 1):
-        totalDistance += calculateEuclidianDistance(state[i], state[i + 1])
+        totalDistance += dist(state[i], state[i + 1])
     
     # Closed loop, add closing distance (distance between last and first point)
-    totalDistance += calculateEuclidianDistance(state[0], state[-1])
+    totalDistance += dist(state[0], state[-1])
     return totalDistance
 
 # The algorithm itself. Given a starting state, runs until conditions are met and returns the best state found based on minimal total distance
@@ -47,8 +42,7 @@ def simulatedAnnealing(startingState, maxTemperature, minTemperature, startingTo
     bestState = startingState
     bestArray = []
     distanceArray = []
-    maxSteps = 10 ** ((numberOfPoints / 15) + 2)
-    print(maxSteps)
+    maxSteps = 10 ** ((numberOfPoints / 10) + 2)
     # While the "temperature" (currentTemperature) is not low enough and the algorithm didn't reach maximum "time" (maxSteps)
     while(currentTemperature >= minTemperature):
         possibleState = generatePossibleState(currentState)
@@ -78,7 +72,7 @@ def simulatedAnnealing(startingState, maxTemperature, minTemperature, startingTo
 
 def main(): 
     # Simulated annealing parameters. Changing the numberOfPoints, temperature and number of steps (maxSteps) changes the outcome
-    numberOfPoints = 35
+    numberOfPoints = 20
     pointMaxCoordinate = 100
     maxTemperature = 10.0
     minTemperature = 0.001
