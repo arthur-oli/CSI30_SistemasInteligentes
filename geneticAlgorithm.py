@@ -38,7 +38,8 @@ def generateStartingPopulation(populationSize, numberOfPoints, maxCoordinate):
     for _ in range(populationSize):
         distance = calculateTspDistance(points)
         population.append((distance, points))
-        #points = generatePossibleState(points)
+        # Instead of shuffling all points, generate a state based on the current state by swapping two random points
+        # points = generatePossibleState(points)
         shuffle(points)
     
     return population
@@ -65,11 +66,13 @@ def geneticAlgorithm(startingPopulation, maxSteps, mutationRate, adaptationThres
     distanceArray = []
     while(currentStep <= maxSteps):
         newPopulation = []
-        #totalFitness = sum(state[0] for state in population)
-        #selectionProbabilities = [(state[0] / totalFitness) for state in population]
+        # Possible roulette implementation
+        # totalFitness = sum(state[0] for state in population)
+        # selectionProbabilities = [(state[0] / totalFitness) for state in population]
         for _ in range (len(population)):
-            #parent1 = sorted(choices(population, weights=selectionProbabilities))[0]
-            #parent2 = sorted(choices(population, weights=selectionProbabilities))[0]
+            # Possible roulette implementation
+            # parent1 = sorted(choices(population, weights=selectionProbabilities))[0]
+            # parent2 = sorted(choices(population, weights=selectionProbabilities))[0]
             parent1 = sorted(choices(population, k = 4))[0]
             parent2 = sorted(choices(population, k = 4))[0]
             child = reproduce(parent1, parent2)
@@ -105,7 +108,7 @@ def main():
     numberOfPoints = 20
     maxCoordinate = 100
     mutationRate = 0.1
-    maxSteps = 1000
+    maxSteps = 5000
     adaptationThreshold = 400
     print(f"Starting simulation. Generated {numberOfPoints} points, will run {maxSteps} steps or until it reaches {adaptationThreshold} distance or lower.")
 
